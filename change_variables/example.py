@@ -56,3 +56,58 @@ plt.tight_layout()
 plt.savefig('change_variables/transformation_linear.png', dpi=100)
 print("fig transformation linear saved")
 
+#example 2: non linear transformation
+print("Example 2: NonLinear Transformation \n")
+print("Original X~N(0,1)")
+print("Transform: Y = X^2")
+print("Result: Y ~ Chi-square(df=1)\n")
+
+#For Y = X^2
+#if x ~ N(0,1), then x^2 ~ X^2(1)
+#using change of variables :
+#f_Y(y) =  f_X(√y) * |d(√y)/dy| + f_X(-√y) * |d(-√y)/dy|
+#        = f_X(√y) * (1/2√y) + f_X(-√y) * (1/2√y)
+#        = 2 * (1/√(2π)) * exp(-y/2) * (1/2√y)
+#        = χ²(y; df=1)
+
+fig, (ax0, ax1, ax2) = plt.subplots(1,3, figsize=(15,4))
+
+#Original
+x_nonlin = np.linspace(-3,3,200)
+pdf_x_nonlin = norm.pdf(x_nonlin, 0, 1)
+ax0.plot(x_nonlin, pdf_x_nonlin, 'b-', linewidth=2)
+ax0.fill_between(x_nonlin, pdf_x_nonlin, alpha=0.3)
+ax0.set_title('Original: X ~ N(0,1)')
+ax0.set_xlabel('x')
+ax0.set_ylabel('f(x)')
+ax0.grid(True, alpha=0.7)
+
+#Transformed (chi-square)
+y_nonlin = np.linspace(0,6, 200)
+pdf_y_nonlin = chi2.pdf(y_nonlin, df=1)
+ax1.plot(y_nonlin, pdf_y_nonlin, 'r-', linewidth=2)
+ax1.fill_between(y_nonlin, pdf_y_nonlin, alpha=0.3)
+ax1.set_title("'Transformed : Y = X ^2 ~ X ^ 2 (1)'")
+ax1.set_xlabel('y')
+ax1.set_ylabel("f(y)")
+ax1.grid(True, alpha=0.3)
+
+#Jacobian factor
+ax2.plot(y_nonlin, 1/(2*np.sqrt(y_nonlin)), 'g-', linewidth=2)
+ax2.fill_between(y_nonlin, 1/(2*np.sqrt(y_nonlin)), alpha=0.3)
+ax2.set_title("Jacobian: |dy/dx| = 1/(2rootsquare(y))")
+ax2.set_xlabel('y')
+ax2.set_ylabel('|Jacobian|')
+ax2.grid(True, alpha=0.3)
+ax2.set_xlim(0,6)
+
+plt.tight_layout()
+plt.savefig('change_variables/transformation_nonlinear.png', dpi=100)
+
+print("KEY FORMULA:")
+print("f_Y(y) = f_X(g⁻¹(y)) * |dg⁻¹(y)/dy|")
+print("\nFor Y = X²:")
+print("g⁻¹(y) = ±√y")
+print("|dg⁻¹/dy| = 1/(2√y)")
+print("f_X(√y) = (1/√(2π)) exp(-y/2)")
+print("→ Chi-square PDF!")
